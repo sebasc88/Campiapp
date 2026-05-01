@@ -1,31 +1,14 @@
 import React, { useState } from 'react';
-import { View, Text, Button } from 'react-native';
+import LoginScreen from './screens/LoginScreen';
+import HomeScreen from './screens/HomeScreen';
 
 export default function App() {
-  const [conexion, setConexion] = useState(false);
-  const [contador, setContador] = useState(0);
+  const [usuario, setUsuario] = useState(null);
 
-  return (
-    <View style={{ marginTop: 50, padding: 20 }}>
-      
-      <Text>
-        Estado: {conexion ? "Online 🟢" : "Offline 🔴"}
-      </Text>
+  if (!usuario) {
+    return <LoginScreen onLogin={setUsuario} />;
+  }
 
-      <Button 
-        title="Cambiar conexión" 
-        onPress={() => setConexion(!conexion)} 
-      />
-
-      <Text style={{ marginTop: 20 }}>
-        Bultos registrados: {contador}
-      </Text>
-
-      <Button 
-        title="Registrar bulto" 
-        onPress={() => setContador(contador + 1)} 
-      />
-
-    </View>
-  );
+    return <HomeScreen usuario={usuario}/>;
 }
+
