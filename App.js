@@ -1,20 +1,31 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, Button } from 'react-native';
 
 export default function App() {
+  const [conexion, setConexion] = useState(false);
+  const [contador, setContador] = useState(0);
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
+    <View style={{ marginTop: 50, padding: 20 }}>
+      
+      <Text>
+        Estado: {conexion ? "Online 🟢" : "Offline 🔴"}
+      </Text>
+
+      <Button 
+        title="Cambiar conexión" 
+        onPress={() => setConexion(!conexion)} 
+      />
+
+      <Text style={{ marginTop: 20 }}>
+        Bultos registrados: {contador}
+      </Text>
+
+      <Button 
+        title="Registrar bulto" 
+        onPress={() => setContador(contador + 1)} 
+      />
+
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
