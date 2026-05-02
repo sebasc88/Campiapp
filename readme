@@ -1,0 +1,4 @@
+paquetes de instalacion navegador
+
+npm install @react-navigation/material-top-tabs
+npx expo install react-native-pager-view
