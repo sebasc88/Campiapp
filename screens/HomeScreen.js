@@ -1,33 +1,32 @@
-import React, { useState } from 'react';
-import { View, Text, Button } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 
-export default function HomeScreen({ usuario }) {
-  const [conexion, setConexion] = useState(false);
-  const [contador, setContador] = useState(0);
-
+export default function HomeScreen() {
   return (
-    <View style={{ marginTop: 50, padding: 20 }}>
-      
-      <Text>
-        Bienvenido { usuario }{"\n"}{"\n"}
-      
-        Estado: {conexion ? "Online " : "Offline "}
+    <View style={styles.container}>
+      <Text style={styles.titulo}>🚧 Módulo en desarrollo</Text>
+      <Text style={styles.mensaje}>
+        Este módulo se encuentra en desarrollo. Pronto estará disponible.
       </Text>
-
-      <Button 
-        title="Cambiar conexión" 
-        onPress={() => setConexion(!conexion)} 
-      />
-
-      <Text style={{ marginTop: 20 }}>
-        Bultos registrados: {contador}
-      </Text>
-
-      <Button 
-        title="Registrar bulto" 
-        onPress={() => setContador(contador + 1)} 
-      />
-
     </View>
   );
 }
+// seccion de modulo en desarrollo  mensaje que dice el estado del modulo
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  titulo: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  mensaje: {
+    fontSize: 16,
+    textAlign: 'center',
+    color: '#555',
+  },
+});

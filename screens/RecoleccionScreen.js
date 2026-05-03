@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
 import * as SQLite from 'expo-sqlite';
 
-// 👉 Base de datos (API nueva)
+// crea la bd 
 const db = SQLite.openDatabaseSync('recoleccion.db');
 
 export default function Recoleccion() {
@@ -10,12 +10,12 @@ export default function Recoleccion() {
   const [registros, setRegistros] = useState([]);
   const [suma, setSuma] = useState(0);
 
+  //almacena el id de usuario para gegistrar movimientos
   const userId = "usuario_1";
 
-  // 🚀 Inicialización
+  // crea e inicia la bd 
   useEffect(() => {
     try {
- 
       db.execSync(`
         CREATE TABLE IF NOT EXISTS registros (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -32,12 +32,12 @@ export default function Recoleccion() {
     }
   }, []);
 
-  // 📅 Fecha actual
+  // traer la fecha actual para registrarla
   const getFechaActual = () => {
     return new Date().toISOString();
   };
 
-  // 📋 Obtener registros
+  // carga listado de registros decendente  la uso para listar la tabla
   const cargarDatos = () => {
     try {
       const datos = db.getAllSync(
@@ -49,7 +49,7 @@ export default function Recoleccion() {
     }
   };
 
-  // 🧮 Obtener suma total
+  //carga la suma que esta en la bd
   const cargarSuma = () => {
     try {
       const resultado = db.getAllSync(
@@ -64,9 +64,10 @@ export default function Recoleccion() {
     }
   };
 
-  // 💾 Guardar
+  // guarda los registros en la bd
   const guardar = () => {
-    try {
+    if(total !=0 ){
+        try {
       const fecha = getFechaActual();
 
       db.runSync(
@@ -80,9 +81,11 @@ export default function Recoleccion() {
     } catch (error) {
       console.log("Error guardando:", error);
     }
+    }
+    
   };
 
-  // 🗑️ Borrar
+  // borrar registro
   const borrar = (id) => {
     try {
       db.runSync('DELETE FROM registros WHERE id = ?', [id]);
@@ -93,7 +96,7 @@ export default function Recoleccion() {
     }
   };
 
-  // ➕➖ Contador
+  // contador
   const aumentar = () => setTotal(total + 1);
 
   const disminuir = () => {
@@ -123,24 +126,42 @@ export default function Recoleccion() {
         <TouchableOpacity style={styles.botonSumar} onPress={aumentar}>
           <Text style={styles.textoBoton}>+</Text>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.botonCandado} onPress={aumentar}>
+          <Text style={styles.textoBoton}>🔒</Text>
+        </TouchableOpacity>
+
       </View>
+
+      
 
       {/* GUARDAR */}
       <TouchableOpacity style={styles.botonGuardar} onPress={guardar}>
         <Text style={styles.textoGuardar}>Guardar</Text>
       </TouchableOpacity>
 
+      {/* ENCABEZADO TABLA */}
+      <View style={styles.header}>
+        <Text style={styles.headerText}>Total</Text>
+        <Text style={styles.headerText}>Usuario</Text>
+        <Text style={styles.headerText}>Fecha</Text>
+        <Text style={styles.headerText}>Acción</Text>
+      </View>
+
       {/* HISTORIAL */}
       <FlatList
         data={registros}
+        
         keyExtractor={(item) => item.id.toString()}
+        
         renderItem={({ item }) => (
+          
           <View style={styles.item}>
-            <View>
-              <Text style={styles.textoItem}>Total: {item.total}</Text>
-              <Text style={styles.textoItem}>Usuario: {item.user_id}</Text>
-              <Text style={styles.textoItem}>Fecha: {item.created_at}</Text>
-            </View>
+            <Text style={styles.columna}>{item.total}</Text>
+            <Text style={styles.columna}>{item.user_id}</Text>
+            <Text style={styles.columna}>{
+            
+              item.created_at.split("T")[0]
+            }</Text>
 
             <TouchableOpacity
               style={styles.botonBorrar}
@@ -156,7 +177,7 @@ export default function Recoleccion() {
   );
 }
 
-// 🎨 ESTILOS
+// estilos
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -202,36 +223,71 @@ const styles = StyleSheet.create({
     fontSize: 30,
     color: '#fff',
   },
+  botonCandado:{
+    backgroundColor:'#0f3381',
+    padding:30,
+    //width:25,
+    //height:25,
+    borderRadius:5,
+  },
   botonGuardar: {
-    backgroundColor: '#3A415A',
+    backgroundColor: '#FFD700',
     padding: 20,
     borderRadius: 10,
     alignItems: 'center',
     marginBottom: 20,
   },
   textoGuardar: {
-    color: '#fff',
+    color: '#000000',
     fontSize: 18,
     fontWeight: 'bold',
   },
+
+  header: {
+    flexDirection: 'row',
+    borderBottomWidth: 2,
+    borderColor: '#fff',
+    paddingBottom: 5,
+    marginBottom: 10,
+  },
+
+  headerText: {
+    flex: 1,
+    color: '#FFD700',
+    fontWeight: 'bold',
+    fontSize: 12,
+    textAlign: 'center',
+  },
+
   item: {
-    padding: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
     borderBottomWidth: 1,
     borderColor: '#ccc',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    paddingVertical: 10,
   },
-  textoItem: {
-    fontSize: 14,
-    color: '#fff',
+
+  columna: {
+    flex: 1,
+    color: '#25c53a',
+   
+    fontWeight: 'bold',
+    margin: 5,
+    padding:2,
+    textAlign: 'center',
   },
+
   botonBorrar: {
     backgroundColor: 'red',
-    padding: 8,
-    borderRadius: 50,
+    width: 50,
+    textAlign: 'center',
+    padding: 10,
+    
+    borderRadius: 3,
   },
+
   textoBorrar: {
+    textAlign: 'center',
     color: '#fff',
     fontWeight: 'bold',
   },
